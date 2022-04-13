@@ -6,7 +6,6 @@ class Body {
     this.v = velocity;
     this.m = mass;
     this.rad = radius;
-    this.points = [];
   }
 
   // draw object
@@ -17,7 +16,7 @@ class Body {
     pop();
   }
 
-  update(bodies) {
+  update(bodies, solve) {
     // get total acceleration
     var acc = createVector(0, 0, 0);
 
@@ -33,16 +32,12 @@ class Body {
       }
     }
 
-    // implement Euler
-    // TODO: move to separate numerical methods class
-
+    // perform integration  
     // timestep
     let dt = 0.01;
     // update position vector
-    let dr = vector.mult(this.v, dt);
-    this.r.add(dr);
+    this.r = solve(this.r, this.v, dt);
     // update velocity vector
-    let dv = vector.mult(acc, dt);
-    this.v.add(dv);
+    this.v = solve(this.v, acc, dt);
   }
 }
