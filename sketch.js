@@ -6,13 +6,13 @@ function setup() {
   // debugMode();
   method = Integrate.euler;
   // set up bodies
-  bodies.push(new Body(createVector(0, 0, 0), createVector(0, 0, 0), 1000, 50));
-  bodies.push(new Body(createVector(200, 0, 0), createVector(0, 0, 2), 2, 20));
-  bodies.push(new Body(createVector(-300, 0, 0), createVector(0, 0, -2), 5, 30));
+  bodies.push(new Star(createVector(0, 0, 0), createVector(0, 0, 0), 1000, 50, color(255, 255, 0)));
+  bodies.push(new Body(createVector(200, 0, 0), createVector(0, 0, 2), 2, 20, color(255, 0, 0)));
+  bodies.push(new Body(createVector(-300, 0, 0), createVector(0, 0, -2), 5, 30, color(0, 0, 255)));
 }
 
 function draw() {
-  background(200);
+  background(50);
   orbitControl();
 
   // draw bodies

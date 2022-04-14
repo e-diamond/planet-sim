@@ -1,17 +1,20 @@
 vector = p5.Vector;
 
 class Body {
-  constructor(position, velocity, mass, radius) {
+  constructor(position, velocity, mass, radius, color) {
     this.r = position;
     this.v = velocity;
     this.m = mass;
     this.rad = radius;
+    this.color = color;
   }
 
   // draw object
   draw() {
     push();
     translate(this.r);
+    noStroke();
+    ambientMaterial(this.color);
     sphere(this.rad);
     pop();
   }
@@ -42,5 +45,24 @@ class Body {
       }
     }
     return acc;
+  }
+}
+
+
+class Star extends Body {
+  constructor(position, velocity, mass, radius, color) {
+    super(position, velocity, mass, radius, color);
+  }
+
+  draw() {
+    // draw star
+    push();
+    translate(this.r);
+    noStroke();
+    emissiveMaterial(this.color);
+    sphere(this.rad);
+    pop();
+    // add light source
+    pointLight(255, 255, 255, this.r);
   }
 }
