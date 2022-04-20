@@ -1,6 +1,9 @@
 vector = p5.Vector;
 
 class Body {
+
+  static bodies = [];
+
   constructor(position, velocity, mass, radius, color) {
     this.r = position;
     this.v = velocity;
@@ -19,9 +22,9 @@ class Body {
     pop();
   }
 
-  update(bodies, solver) {
+  update(solver) {
     // get total acceleration
-    let a = this.calcAcceleration(bodies);
+    let a = this.calcAcceleration(Body.bodies);
 
     // perform integration
     // timestep
@@ -45,6 +48,14 @@ class Body {
       }
     }
     return acc;
+  }
+
+  static add(r, v, m, rad, c) {
+
+    let position = createVector(r[0], r[1], r[2]);
+    let velocity = createVector(v[0], v[1], v[2]);
+
+    Body.bodies.push(new Body(position, velocity, m, rad, color(c)));
   }
 }
 

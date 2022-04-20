@@ -1,47 +1,104 @@
 
-function initSettings() {
-  let width = 200;
+class AddBodyMenu {
+  constructor() {
+    this.menu = QuickSettings.create(20, 20, "Add a new body");
 
-  // <div id=""></div>
-  let cls = "settings";
-  let div = ["<div class="+cls+" id=\"", "\"></div>"];
-  let position = "position";
-  let velocity = "velocity";
-  let add_body = "add_body";
+    this.fields = {
+      position: "Position",
+      velocity: "Velocity",
+      mass: "Mass",
+      radius: "Radius",
+      color: "Colour",
+      buttons: "Add new object"
+    };
 
-  // create settings panel
-  settings = QuickSettings.create(20, 20, "Settings");
-  settings.setWidth(width);
+    this.inputs = {
+      position: [],
+      velocity: [],
+      buttons: []
+    };
 
-  // initial position input
-  settings.addHTML("Position", div[0]+position+div[1]);
-  let pos_params = [];
-  for (var i = 0; i < 3; i++) {
-    pos_params[i] = createInput(0, "number");
-    pos_params[i].parent(position);
-    pos_params[i].class("qs_text_input");
+    this.init();
   }
 
-  // initial velocity input
-  settings.addHTML("Velocity", div[0]+velocity+div[1]);
-  let vel_params = [];
-  for (var i = 0; i < 3; i++) {
-    vel_params[i] = createInput(0, "number");
-    vel_params[i].parent(velocity);
-    vel_params[i].class("qs_text_input");
+  init() {
+
+    let container_ids = {
+      position: "position",
+      velocity: "velocity",
+      buttons: "add_body"
+    };
+
+    // initial position input
+    this.menu.addHTML(this.fields.position, this.divString(container_ids.position));
+    this.inputs.position = this.xyzInput(container_ids.position);
+
+    // initial velocity input
+    this.menu.addHTML(this.fields.velocity, this.divString(container_ids.velocity));
+    this.inputs.velocity = this.xyzInput(container_ids.velocity);
+
+    // mass input
+    this.menu.addNumber(this.fields.mass, 1, 1000, 5);
+
+    // radius input
+    this.menu.addNumber(this.fields.radius, 1, 100, 20);
+
+    // color input
+    this.menu.addColor(this.fields.color, '#ff0000');
+
+    // buttons to add new object
+    this.menu.addHTML(this.fields.buttons, this.divString(container_ids.buttons));
+    this.inputs.buttons.push(createButton("Add Body"));
+    this.inputs.buttons.push(createButton("Add Star"));
+    const boundAddBody = this.addBody.bind(this);
+    for (var btn of this.inputs.buttons) {
+      btn.parent(container_ids.buttons);
+      btn.mouseClicked(boundAddBody);
+    }
   }
 
-  // initial mass input
-  settings.addNumber("Mass", 1, 1000, 5);
-
-  // initial radius input
-  settings.addNumber("Radius", 1, 100, 20);
-
-  // buttons to add new object
-  settings.addHTML("Add new object", div[0]+add_body+div[1]);
-  let buttons = [createButton("Add Body"), createButton("Add Star")];
-  for (var button of buttons) {
-    button.parent(add_body);
+  divString(id) {
+    // <div id=""></div>
+    let div = ["<div id=\"", "\"></div>"];
+    return div[0] + id + div[1];
   }
 
+  xyzInput(parent) {
+    let arr = [];
+    for (var i = 0; i < 3; i++) {
+      arr[i] = createInput(0, 'number');
+      arr[i].parent(parent);
+      arr[i].addClass('qs_text_input');
+      arr[i].addClass('qs_number');
+    }
+    return arr;
+  }
+
+  addBody() {
+    // fetch position xyz
+    let pos = [];
+    for (var p of this.inputs.position) {
+      pos.push(Number(p.value()));
+    }
+    console.log(pos);
+
+    // fetch velocity xyz
+    let vel = [];
+    for (var v of this.inputs.velocity) {
+      vel.push(Number(v.value()));
+    }
+
+    // fetch mass
+    let mass = this.menu.getValue(this.fields.mass);
+
+    // fetch radius
+    let radius = this.menu.getValue(this.fields.radius);
+
+    // fetch color
+    let color = this.menu.getValue(this.fields.color);
+
+    // create new body
+    Body.add(pos, vel, mass, radius, color);
+
+  }
 }
