@@ -13,9 +13,10 @@ class AddBodyMenu {
     };
 
     this.inputs = {
-      position: [],
-      velocity: [],
-      buttons: []
+      position: null,
+      velocity: null,
+      btn_addBody: null,
+      btn_addStar: null
     };
 
     this.init();
@@ -48,13 +49,16 @@ class AddBodyMenu {
 
     // buttons to add new object
     this.menu.addHTML(this.fields.buttons, this.divString(container_ids.buttons));
-    this.inputs.buttons.push(createButton("Add Body"));
-    this.inputs.buttons.push(createButton("Add Star"));
-    const boundAddBody = this.addBody.bind(this);
-    for (var btn of this.inputs.buttons) {
-      btn.parent(container_ids.buttons);
-      btn.mouseClicked(boundAddBody);
-    }
+    // 'Add Body' button
+    this.inputs.btn_addBody = createButton("Add Body");
+    const boundAddBody = this.addBody.bind(this, 'body');
+    this.inputs.btn_addBody.parent(container_ids.buttons);
+    this.inputs.btn_addBody.mouseClicked(boundAddBody);
+    // 'Add Star' button
+    this.inputs.btn_addStar = createButton("Add Star");
+    const boundAddStar = this.addBody.bind(this, 'star');
+    this.inputs.btn_addStar.parent(container_ids.buttons);
+    this.inputs.btn_addStar.mouseClicked(boundAddStar);
   }
 
   divString(id) {
@@ -74,13 +78,12 @@ class AddBodyMenu {
     return arr;
   }
 
-  addBody() {
+  addBody(type) {
     // fetch position xyz
     let pos = [];
     for (var p of this.inputs.position) {
       pos.push(Number(p.value()));
     }
-    console.log(pos);
 
     // fetch velocity xyz
     let vel = [];
@@ -98,7 +101,12 @@ class AddBodyMenu {
     let color = this.menu.getValue(this.fields.color);
 
     // create new body
-    Body.add(pos, vel, mass, radius, color);
+    if (type == 'body') {
+      Body.add(pos, vel, mass, radius, color);
+    } else if (type == 'star') {
+      Star.add(pos, vel, mass, radius, color);
+    }
 
   }
+
 }

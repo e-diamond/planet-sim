@@ -76,4 +76,12 @@ class Star extends Body {
     // add light source
     pointLight(255, 255, 255, this.r);
   }
+
+  static add(r, v, m, rad, c) {
+
+    let position = createVector(r[0], r[1], r[2]);
+    let velocity = createVector(v[0], v[1], v[2]);
+
+    Body.bodies.push(new Star(position, velocity, m, rad, color(c)));
+  }
 }
