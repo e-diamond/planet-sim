@@ -1,5 +1,6 @@
 var method;
-var menu;
+var add_menu;
+var control_menu;
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
@@ -10,7 +11,8 @@ function setup() {
   // Body.bodies.push(new Body(createVector(-300, 0, 0), createVector(0, 0, -2), 5, 30, color(0, 0, 255)));
 
   // initialise GUI
-  menu = new AddBodyMenu();
+  add_menu = new AddBodyMenu();
+  control_menu = new ControlMenu();
 
 }
 
@@ -23,11 +25,13 @@ function draw() {
     body.draw();
   }
 
-  // update body position
-  // i times per draw loop
-  for (var i = 0; i < 50; i++) {
-    for (var body of Body.bodies) {
-      body.update(method);
+  if (control_menu.isPlaying) {
+    // update body position
+    // i times per draw loop
+    for (var i = 0; i < control_menu.speed; i++) {
+      for (var body of Body.bodies) {
+        body.update(method);
+      }
     }
   }
 

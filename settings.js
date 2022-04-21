@@ -110,3 +110,34 @@ class AddBodyMenu {
   }
 
 }
+
+class ControlMenu {
+
+  constructor() {
+    this.isPlaying = false;
+    this.speed = 50;
+    this.width = 200;
+    this.menu = QuickSettings.create(windowWidth-this.width-20, 20, "Control");
+
+    this.init();
+  }
+
+  init() {
+    // add play/pause button
+    const boundPlayPause = this.playPause.bind(this);
+    this.menu.addButton("Play/Pause", boundPlayPause);
+
+    // add speed slider
+    const boundSetSpeed = this.setSpeed.bind(this);
+    this.menu.addRange("Speed", 1, 100, 50, 1, boundSetSpeed);
+  }
+
+  playPause() {
+    this.isPlaying = !this.isPlaying;
+    console.log(this.isPlaying);
+  }
+
+  setSpeed(value) {
+    this.speed = value;
+  }
+}
