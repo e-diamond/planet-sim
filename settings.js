@@ -1,7 +1,33 @@
 
-class AddBodyMenu {
+class Menu {
   constructor() {
-    this.menu = QuickSettings.create(20, 20, "Add a new body");
+    this.margin = 20;
+  }
+
+  divString(id) {
+    // <div id=""></div>
+    let div = ["<div id=\"", "\"></div>"];
+    return div[0] + id + div[1];
+  }
+
+  numberStyle(inp) {
+    inp.addClass('qs_text_input');
+    inp.addClass('qs_number');
+  }
+
+  buttonStyle(btn) {
+    btn.addClass('qs_button');
+    btn.style('margin-top', '2px');
+    btn.style('margin-bottom', '2px');
+  }
+}
+
+
+class AddBodyMenu extends Menu {
+  constructor() {
+    super();
+
+    this.menu = QuickSettings.create(this.margin, this.margin, "Add a new body");
 
     this.fields = {
       position: "Position",
@@ -15,28 +41,19 @@ class AddBodyMenu {
     this.inputs = {
       position: null,
       velocity: null,
-      btn_addBody: null,
-      btn_addStar: null
     };
 
     this.init();
   }
 
   init() {
-
-    let container_ids = {
-      position: "position",
-      velocity: "velocity",
-      buttons: "add_body"
-    };
-
     // initial position input
-    this.menu.addHTML(this.fields.position, this.divString(container_ids.position));
-    this.inputs.position = this.xyzInput(container_ids.position);
+    this.menu.addHTML(this.fields.position, this.divString(this.fields.position));
+    this.inputs.position = this.xyzInput(this.fields.position);
 
     // initial velocity input
-    this.menu.addHTML(this.fields.velocity, this.divString(container_ids.velocity));
-    this.inputs.velocity = this.xyzInput(container_ids.velocity);
+    this.menu.addHTML(this.fields.velocity, this.divString(this.fields.velocity));
+    this.inputs.velocity = this.xyzInput(this.fields.velocity);
 
     // mass input
     this.menu.addNumber(this.fields.mass, 1, 1000, 5);
@@ -48,23 +65,17 @@ class AddBodyMenu {
     this.menu.addColor(this.fields.color, '#ff0000');
 
     // buttons to add new object
-    this.menu.addHTML(this.fields.buttons, this.divString(container_ids.buttons));
+    this.menu.addHTML(this.fields.buttons, this.divString(this.fields.buttons));
     // 'Add Body' button
-    this.inputs.btn_addBody = createButton("Add Body");
+    let btn_addBody = createButton("Add Body");
     const boundAddBody = this.addBody.bind(this, 'body');
-    this.inputs.btn_addBody.parent(container_ids.buttons);
-    this.inputs.btn_addBody.mouseClicked(boundAddBody);
+    btn_addBody.parent(this.fields.buttons);
+    btn_addBody.mouseClicked(boundAddBody);
     // 'Add Star' button
-    this.inputs.btn_addStar = createButton("Add Star");
+    let btn_addStar = createButton("Add Star");
     const boundAddStar = this.addBody.bind(this, 'star');
-    this.inputs.btn_addStar.parent(container_ids.buttons);
-    this.inputs.btn_addStar.mouseClicked(boundAddStar);
-  }
-
-  divString(id) {
-    // <div id=""></div>
-    let div = ["<div id=\"", "\"></div>"];
-    return div[0] + id + div[1];
+    btn_addStar.parent(this.fields.buttons);
+    btn_addStar.mouseClicked(boundAddStar);
   }
 
   xyzInput(parent) {
@@ -72,8 +83,7 @@ class AddBodyMenu {
     for (var i = 0; i < 3; i++) {
       arr[i] = createInput(0, 'number');
       arr[i].parent(parent);
-      arr[i].addClass('qs_text_input');
-      arr[i].addClass('qs_number');
+      this.numberStyle(arr[i]);
     }
     return arr;
   }
@@ -106,18 +116,25 @@ class AddBodyMenu {
     } else if (type == 'star') {
       Star.add(pos, vel, mass, radius, color);
     }
-
   }
-
 }
 
-class ControlMenu {
+class ControlMenu extends Menu {
 
   constructor() {
+    super();
     this.isPlaying = false;
     this.speed = 50;
+
     this.width = 200;
-    this.menu = QuickSettings.create(windowWidth-this.width-20, 20, "Control");
+    this.menu = QuickSettings.create(windowWidth-this.width-this.margin, this.margin, "Control");
+
+    this.fields = {
+      play: "Play/Pause",
+      speed: "Speed",
+      reset: "Reset",
+      remove: "Remove Bodies"
+    };
 
     this.init();
   }
@@ -125,24 +142,27 @@ class ControlMenu {
   init() {
     // add play/pause button
     const boundPlayPause = this.playPause.bind(this);
-    this.menu.addButton("Play/Pause", boundPlayPause);
+    this.menu.addButton(this.fields.play, boundPlayPause);
 
     // add speed slider
     const boundSetSpeed = this.setSpeed.bind(this);
-    this.menu.addRange("Speed", 1, 100, 50, 1, boundSetSpeed);
+    this.menu.addRange(this.fields.speed, 1, 100, this.speed, 1, boundSetSpeed);
 
     // add reset button
-    this.menu.addButton("Reset", Body.resetAll);
+    this.menu.addButton(this.fields.reset, Body.resetAll);
 
     // add removal buttons
-    this.menu.addHTML("Remove Bodies", "<div id=\"remove\"></div>");
+    // this.menu.addHTML("Remove Bodies", "<div id=\"remove\"></div>");
+    this.menu.addHTML(this.fields.remove, this.divString(this.fields.remove));
     // remove previous
     let btn_removePrev = createButton("Remove previous");
-    btn_removePrev.parent("remove");
+    this.buttonStyle(btn_removePrev);
+    btn_removePrev.parent(this.fields.remove);
     btn_removePrev.mouseClicked(Body.removePrev);
     // remove all
     let btn_removeAll = createButton("Remove all");
-    btn_removeAll.parent("remove");
+    this.buttonStyle(btn_removeAll);
+    btn_removeAll.parent(this.fields.remove);
     btn_removeAll.mouseClicked(Body.removeAll);
   }
 
