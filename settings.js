@@ -133,11 +133,21 @@ class ControlMenu {
 
     // add reset button
     this.menu.addButton("Reset", Body.resetAll);
+
+    // add removal buttons
+    this.menu.addHTML("Remove Bodies", "<div id=\"remove\"></div>");
+    // remove previous
+    let btn_removePrev = createButton("Remove previous");
+    btn_removePrev.parent("remove");
+    btn_removePrev.mouseClicked(Body.removePrev);
+    // remove all
+    let btn_removeAll = createButton("Remove all");
+    btn_removeAll.parent("remove");
+    btn_removeAll.mouseClicked(Body.removeAll);
   }
 
   playPause() {
     this.isPlaying = !this.isPlaying;
-    console.log(this.isPlaying);
   }
 
   setSpeed(value) {

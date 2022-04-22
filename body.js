@@ -71,6 +71,16 @@ class Body {
       body.reset();
     }
   }
+
+  static removePrev() {
+    if (Body.bodies.length > 0) {
+      Body.bodies.pop();
+    }
+  }
+
+  static removeAll() {
+    Body.bodies = [];
+  }
 }
 
 
