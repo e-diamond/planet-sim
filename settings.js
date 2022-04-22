@@ -130,6 +130,9 @@ class ControlMenu {
     // add speed slider
     const boundSetSpeed = this.setSpeed.bind(this);
     this.menu.addRange("Speed", 1, 100, 50, 1, boundSetSpeed);
+
+    // add reset button
+    this.menu.addButton("Reset", Body.resetAll);
   }
 
   playPause() {

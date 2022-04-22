@@ -5,6 +5,9 @@ class Body {
   static bodies = [];
 
   constructor(position, velocity, mass, radius, color) {
+    this.init_r = position;
+    this.init_v = velocity;
+
     this.r = position;
     this.v = velocity;
     this.m = mass;
@@ -50,12 +53,23 @@ class Body {
     return acc;
   }
 
+  reset() {
+    this.r = this.init_r;
+    this.v = this.init_v;
+  }
+
   static add(r, v, m, rad, c) {
 
     let position = createVector(r[0], r[1], r[2]);
     let velocity = createVector(v[0], v[1], v[2]);
 
     Body.bodies.push(new Body(position, velocity, m, rad, color(c)));
+  }
+
+  static resetAll() {
+    for (var body of Body.bodies) {
+      body.reset();
+    }
   }
 }
 
