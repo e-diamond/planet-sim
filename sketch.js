@@ -5,10 +5,10 @@ var control_menu;
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL);
   method = Integrate.euler;
-  // // set up bodies
-  // Body.bodies.push(new Star(createVector(0, 0, 0), createVector(0, 0, 0), 1000, 50, color(255, 255, 0)));
-  // Body.bodies.push(new Body(createVector(200, 0, 0), createVector(0, 0, 2), 2, 20, color('#ff0000')));
-  // Body.bodies.push(new Body(createVector(-300, 0, 0), createVector(0, 0, -2), 5, 30, color(0, 0, 255)));
+  // set up bodies
+  Star.add([0, 0, 0], [0, 0, 0], 1000, 50, '#fcf82d');
+  Body.add([200, 0, 0], [0, 0, 2], 2, 20, '#ff0000');
+  Body.add([-300, 0, 0], [0, 0, -2], 5, 30, '#326ddb');
 
   // initialise GUI
   add_menu = new AddBodyMenu();
@@ -21,17 +21,13 @@ function draw() {
   orbitControl();
 
   // draw bodies
-  for (var body of Body.bodies) {
-    body.draw();
-  }
+  Body.drawAll();
 
   if (control_menu.isPlaying) {
     // update body position
     // i times per draw loop
     for (var i = 0; i < control_menu.speed; i++) {
-      for (var body of Body.bodies) {
-        body.update(method);
-      }
+      Body.updateAll();
     }
   }
 
