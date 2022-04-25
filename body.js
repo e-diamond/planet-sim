@@ -3,6 +3,7 @@ vector = p5.Vector;
 class Body {
 
   static bodies = [];
+  static planets = [];
 
   constructor(position, velocity, mass, radius, color) {
     this.init_r = position;
@@ -67,18 +68,26 @@ class Body {
     let position = createVector(r[0], r[1], r[2]);
     let velocity = createVector(v[0], v[1], v[2]);
 
-    Body.bodies.push(new Body(position, velocity, m, rad, color(c)));
+    let body = new Body(position, velocity, m, rad, color(c));
+
+    Body.bodies.push(body);
+    Body.planets.push(body);
   }
 
   // draw every body in the system
   static drawAll() {
-    for (var body of Body.bodies) {
-      body.draw();
+    // stars must be drawn before other bodies
+    // for lights to work correctly
+    for (var star of Star.stars) {
+      star.draw();
+    }
+    for (var planet of Body.planets) {
+      planet.draw();
     }
   }
 
   // update every body in the system
-  static updateAll() {
+  static updateAll(method) {
     for (var body of Body.bodies) {
       body.update(method);
     }
@@ -97,14 +106,17 @@ class Body {
       var removed = Body.bodies.pop();
     }
     if (removed instanceof Star) {
-      Star.count--;
+      Star.stars.pop();
+    } else {
+      Body.planets.pop();
     }
   }
 
   // remove all bodies from the system
   static removeAll() {
     Body.bodies = [];
-    Star.count = 0;
+    Body.planets = [];
+    Star.stars = [];
   }
 }
 
@@ -113,7 +125,7 @@ class Star extends Body {
 
   // track number of stars
   // only 5 point lights can be active at once
-  static count = 0;
+  static stars = [];
 
   constructor(position, velocity, mass, radius, color) {
     super(position, velocity, mass, radius, color);
@@ -138,7 +150,9 @@ class Star extends Body {
     let position = createVector(r[0], r[1], r[2]);
     let velocity = createVector(v[0], v[1], v[2]);
 
-    Body.bodies.push(new Star(position, velocity, m, rad, color(c)));
-    Star.count++;
+    let star = new Star(position, velocity, m, rad, color(c));
+
+    Body.bodies.push(star);
+    Star.stars.push(star);
   }
 }

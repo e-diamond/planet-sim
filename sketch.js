@@ -27,7 +27,7 @@ function draw() {
     // update body position
     // i times per draw loop
     for (var i = 0; i < control_menu.speed; i++) {
-      Body.updateAll();
+      Body.updateAll(method);
     }
   }
 
