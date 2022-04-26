@@ -68,12 +68,12 @@ class AddBodyMenu extends Menu {
     this.menu.addHTML(this.fields.buttons, this.divString(this.fields.buttons));
     // 'Add Body' button
     let btn_addBody = createButton("Add Body");
-    const boundAddBody = this.addBody.bind(this, 'body');
+    const boundAddBody = this.addBody.bind(this);
     btn_addBody.parent(this.fields.buttons);
     btn_addBody.mouseClicked(boundAddBody);
     // 'Add Star' button
     let btn_addStar = createButton("Add Star");
-    const boundAddStar = this.addBody.bind(this, 'star');
+    const boundAddStar = this.addStar.bind(this);
     btn_addStar.parent(this.fields.buttons);
     btn_addStar.mouseClicked(boundAddStar);
   }
@@ -88,33 +88,55 @@ class AddBodyMenu extends Menu {
     return arr;
   }
 
-  addBody(type) {
+  getValues() {
+    // object to return
+    let values = {
+      position: [],
+      velocity: [],
+      mass: null,
+      radius: null,
+      color: null
+    };
+
     // fetch position xyz
-    let pos = [];
+    // let pos = [];
     for (var p of this.inputs.position) {
-      pos.push(Number(p.value()));
+      values.position.push(Number(p.value()));
     }
 
     // fetch velocity xyz
-    let vel = [];
+    // let vel = [];
     for (var v of this.inputs.velocity) {
-      vel.push(Number(v.value()));
+      values.velocity.push(Number(v.value()));
     }
 
     // fetch mass
-    let mass = this.menu.getValue(this.fields.mass);
+    values.mass = this.menu.getValue(this.fields.mass);
 
     // fetch radius
-    let radius = this.menu.getValue(this.fields.radius);
+    values.radius = this.menu.getValue(this.fields.radius);
 
     // fetch color
-    let color = this.menu.getValue(this.fields.color);
+    values.color = this.menu.getValue(this.fields.color);
 
+    // return object
+    return values;
+  }
+
+  addBody(type) {
+    var v = this.getValues();
     // create new body
-    if (type == 'body') {
-      Body.add(pos, vel, mass, radius, color);
-    } else if (type == 'star') {
-      Star.add(pos, vel, mass, radius, color);
+    Body.add(v.position, v.velocity, v.mass, v.radius, v.color);
+  }
+
+  addStar() {
+    // check if new star can be added
+    if (!Star.isFull()) {
+      var v = this.getValues();
+      // create new star
+      Star.add(v.position, v.velocity, v.mass, v.radius, v.color);
+    } else {
+      // TODO: cannot add more stars 
     }
   }
 }

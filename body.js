@@ -68,7 +68,7 @@ class Body {
     let position = createVector(r[0], r[1], r[2]);
     let velocity = createVector(v[0], v[1], v[2]);
 
-    let body = new Body(position, velocity, m, rad, color(c));
+    const body = new Body(position, velocity, m, rad, color(c));
 
     Body.bodies.push(body);
     Body.planets.push(body);
@@ -106,7 +106,7 @@ class Body {
       var removed = Body.bodies.pop();
     }
     if (removed instanceof Star) {
-      Star.stars.pop();
+      Star.removePrev();
     } else {
       Body.planets.pop();
     }
@@ -150,9 +150,19 @@ class Star extends Body {
     let position = createVector(r[0], r[1], r[2]);
     let velocity = createVector(v[0], v[1], v[2]);
 
-    let star = new Star(position, velocity, m, rad, color(c));
+    const star = new Star(position, velocity, m, rad, color(c));
 
     Body.bodies.push(star);
     Star.stars.push(star);
+  }
+
+  // remove most recently added star
+  static removePrev() {
+    Star.stars.pop();
+  }
+
+  // check if more stars can be added (max. 5)
+  static isFull() {
+    return Star.stars.length >= 5;
   }
 }
