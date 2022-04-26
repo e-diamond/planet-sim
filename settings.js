@@ -35,12 +35,17 @@ class AddBodyMenu extends Menu {
       mass: "Mass",
       radius: "Radius",
       color: "Colour",
-      buttons: "Add new object"
+      buttons: "Add new object",
+      message: "message"
     };
 
     this.inputs = {
       position: null,
       velocity: null,
+    };
+
+    this.errors = {
+      star_over: "Sorry! You can't have more than 5 stars in a system :("
     };
 
     this.init();
@@ -76,6 +81,11 @@ class AddBodyMenu extends Menu {
     const boundAddStar = this.addStar.bind(this);
     btn_addStar.parent(this.fields.buttons);
     btn_addStar.mouseClicked(boundAddStar);
+
+    // add message box
+    this.menu.addHTML(this.fields.message, "");
+    this.menu.hideTitle(this.fields.message);
+    this.menu.hideControl(this.fields.message);
   }
 
   xyzInput(parent) {
@@ -127,6 +137,8 @@ class AddBodyMenu extends Menu {
     var v = this.getValues();
     // create new body
     Body.add(v.position, v.velocity, v.mass, v.radius, v.color);
+    // hide any error messages on successful addition of body 
+    this.menu.hideControl(this.fields.message);
   }
 
   addStar() {
@@ -135,8 +147,12 @@ class AddBodyMenu extends Menu {
       var v = this.getValues();
       // create new star
       Star.add(v.position, v.velocity, v.mass, v.radius, v.color);
+      // hide any error messages on successful addition of body
+      this.menu.hideControl(this.fields.message);
     } else {
-      // TODO: cannot add more stars 
+      // tell user there is a 5 star limit
+      this.menu.setValue(this.fields.message, this.errors.star_over);
+      this.menu.showControl(this.fields.message);
     }
   }
 }
