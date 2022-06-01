@@ -44,10 +44,6 @@ class AddBodyMenu extends Menu {
       velocity: null,
     };
 
-    this.errors = {
-      star_over: "Sorry! You can't have more than 5 stars in a system :("
-    };
-
     this.init();
   }
 
@@ -61,10 +57,10 @@ class AddBodyMenu extends Menu {
     this.inputs.velocity = this.xyzInput(this.fields.velocity);
 
     // mass input
-    this.menu.addNumber(this.fields.mass, 1, 1000, 5);
+    this.menu.addNumber(this.fields.mass, 0, 1000, 5);
 
     // radius input
-    this.menu.addNumber(this.fields.radius, 1, 100, 20);
+    this.menu.addNumber(this.fields.radius, 0, 100, 20);
 
     // color input
     this.menu.addColor(this.fields.color, '#ff0000');
@@ -135,23 +131,27 @@ class AddBodyMenu extends Menu {
 
   addBody(type) {
     var v = this.getValues();
-    // create new body
-    Body.add(v.position, v.velocity, v.mass, v.radius, v.color);
-    // hide any error messages on successful addition of body 
-    this.menu.hideControl(this.fields.message);
+    console.log(v);
+    try {
+      // create new body
+      Body.add(v.position, v.velocity, v.mass, v.radius, v.color);
+      // hide any error messages on successful addition of body
+      this.menu.hideControl(this.fields.message);
+    } catch (e) {
+      // display error message to user
+      this.menu.setValue(this.fields.message, e);
+      this.menu.showControl(this.fields.message);
+    }
   }
 
   addStar() {
-    // check if new star can be added
-    if (!Star.isFull()) {
-      var v = this.getValues();
-      // create new star
+    var v = this.getValues();
+    console.log(v);
+    try {
       Star.add(v.position, v.velocity, v.mass, v.radius, v.color);
-      // hide any error messages on successful addition of body
       this.menu.hideControl(this.fields.message);
-    } else {
-      // tell user there is a 5 star limit
-      this.menu.setValue(this.fields.message, this.errors.star_over);
+    } catch (e) {
+      this.menu.setValue(this.fields.message, e);
       this.menu.showControl(this.fields.message);
     }
   }

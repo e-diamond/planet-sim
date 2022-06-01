@@ -64,6 +64,12 @@ class Body {
 
   // add a new body to the system
   static add(r, v, m, rad, c) {
+    // verify parameters are valid
+    try {
+      Body.verify(r, v, m, rad, c);
+    } catch (e) {
+      throw e;
+    }
 
     let position = createVector(r[0], r[1], r[2]);
     let velocity = createVector(v[0], v[1], v[2]);
@@ -72,6 +78,60 @@ class Body {
 
     Body.bodies.push(body);
     Body.planets.push(body);
+  }
+
+  static verify(r, v, m, rad, c) {
+    // VERIFY r VARIABLE
+    // check r is an array of length 3
+    if (r.length != 3) {
+      throw "Position must be 3-dimensional";
+    }
+    // check individual r coordinates
+    for (var coord of r) {
+      let maxpos = 1000;
+      // check r coords are numbers
+      if (typeof coord != "number" || isNaN(coord)) {
+        throw "Position coordinates must be numbers";
+      // check r coords aren't out of bounds
+    } else if (coord > maxpos || coord < -maxpos) {
+        throw "Position coordinates must be a value between " + -maxpos + " and " + maxpos;
+      }
+    }
+
+    // VERIFY v VARIABLE
+    // check v is an array of length 3
+    if (v.length != 3) {
+      throw "Velocity must be 3-dimensional";
+    }
+    // check individual v coordinates
+    for (var coord of v) {
+      let maxv = 100;
+      // check r coords are numbers
+      if (typeof coord != "number" || isNaN(coord)) {
+        throw "Velocity coordinates must be numbers";
+      // check r coords aren't out of bounds
+    } else if (coord > maxv || coord < -maxv) {
+        throw "Velocity coordinates must be a value between " + -maxv + " and " + maxv;
+      }
+    }
+
+    // VERIFY m VARIABLE
+    // check m is a number
+    if (typeof m != "number" || isNaN(m)) {
+      throw "Mass must be a number";
+    } else if (m <= 0) {
+      throw "Mass must be greater than 0";
+    }
+
+    // VERIFY rad VARIABLE
+    // check m is a number
+    if (typeof rad != "number" || isNaN(rad)) {
+      throw "Radius must be a number";
+    } else if (rad <= 0) {
+      throw "Radius must be greater than 0";
+    }
+
+    return true;
   }
 
   // draw every body in the system
@@ -146,14 +206,26 @@ class Star extends Body {
 
   // add a star to the system
   static add(r, v, m, rad, c) {
+    // check if stars is full
+    if (!Star.isFull()) {
+      // verify parameters are valid
+      try {
+        Body.verify(r, v, m, rad, c);
+      } catch (e) {
+        throw e;
+      }
 
-    let position = createVector(r[0], r[1], r[2]);
-    let velocity = createVector(v[0], v[1], v[2]);
+      let position = createVector(r[0], r[1], r[2]);
+      let velocity = createVector(v[0], v[1], v[2]);
 
-    const star = new Star(position, velocity, m, rad, color(c));
+      const star = new Star(position, velocity, m, rad, color(c));
 
-    Body.bodies.push(star);
-    Star.stars.push(star);
+      Body.bodies.push(star);
+      Star.stars.push(star);
+
+    } else {
+      throw "Sorry! You can't have more than 5 stars in a system :(";
+    }
   }
 
   // remove most recently added star
